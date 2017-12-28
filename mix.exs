@@ -11,17 +11,18 @@ defmodule Qsm.Mixfile do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
-
-  # Run "mix help deps" to learn about dependencies.
+ 
   defp deps do
     [
-      {:e_poller, "~> 0.1.1"}
+      {:e_poller, "~> 0.1.1"},
+      {:poison, "~> 3.1"},
+      {:mock, "~> 0.3.0", only: :test},
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end
 end

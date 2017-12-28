@@ -1,8 +1,11 @@
 defmodule QsmTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   doctest Qsm
 
-  test "greets the world" do
-    assert Qsm.hello() == :world
+  import Mock
+
+  test "start" do
+    {:ok, uut} = Qsm.SqsManager.do_stuff()
+    
   end
 end
