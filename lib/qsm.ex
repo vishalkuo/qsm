@@ -10,8 +10,8 @@ defmodule Qsm do
 
   @type state_data :: map()
 
-  @spec initialize_entry(queue_name, Qsm.State, state_data // nil) :: {:ok, PID}
-  def initialize_entry(queue_name, entry_state, entry_data) do
+  @spec initialize_entry(queue_name, Qsm.State, state_data) :: {:ok, PID}
+  def initialize_entry(queue_name, entry_state, entry_data \\ nil) do
     Qsm.SqsManager.send_message(queue_name, entry_state, entry_data)
     start_link(queue_name)
   end

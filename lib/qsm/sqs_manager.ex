@@ -1,11 +1,11 @@
 defmodule Qsm.SqsManager do
 
   def get_transition(message) do
-    data = Poison.decode(message, as: %Qsm.QueueMessage{})
+    data = Poison.decode!(message, as: %Qsm.QueueMessage{})
     
-    "Elixir." <> data.module_name
+    data.module_name
       |> String.to_atom
-      |> apply(:get_next_state, data.body)
+      |> apply(:get_next_state, [data.body])
   end
 
 
@@ -31,6 +31,6 @@ defmodule Qsm.SqsManager do
   end
 
   def do_stuff() do
-    EPoller.start_link("my_worker_queue", &message_handler(x))
+    EPoller.start_link("my_worker_queue", &message_handler(&1))
   end
 end
