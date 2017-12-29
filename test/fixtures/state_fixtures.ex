@@ -3,15 +3,15 @@ defmodule Qsm.Fixtures do
     @behaviour Qsm.State
   
     def get_next_state(message) do
-      {QsmTest.StateB, message}
+      {Qsm.Fixtures.StateB, message}
     end
   end
   
   defmodule StateB do
     @behaviour Qsm.State
   
-    def get_next_state(message) do
-      IO.inspect message
+    def get_next_state(_) do
+      nil
     end
   end
 end
