@@ -1,6 +1,7 @@
 defmodule Qsm do
   use Agent
   alias Qsm.SqsManager
+  alias Qsm.PollerManager
 
   @moduledoc """
   Documentation for Qsm.
@@ -11,7 +12,7 @@ defmodule Qsm do
   @type state_data :: map()
 
   @spec enqueue_work(queue_name, Qsm.State, state_data) :: nil
-  def initialize_entry(queue_name, entry_state, entry_data \\ nil) do
+  def enqueue_work(queue_name, entry_state, entry_data \\ nil) do
     Qsm.SqsManager.send_message(queue_name, entry_state, entry_data)
     :ok
   end
@@ -34,13 +35,13 @@ defmodule Qsm do
     end)
   end
 
-  @spec run(PID) :: none
-  def run(pid) do
+  @spec run_async(PID) :: none
+  def run_async(pid) do
     Agent.get(pid, fn m ->
       m[:pollers]
       |> Enum.each(fn p ->
-        Task.start(fn ->
-          EPoller.poll(p)
+        spawn(fn -> 
+          PollerManager.poll_infinitely(p)
         end)
       end)
 
