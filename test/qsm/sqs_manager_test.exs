@@ -2,11 +2,11 @@ defmodule Qsm.SqsManagerTest do
   use ExUnit.Case, async: false
   doctest Qsm
   Code.load_file("../fixtures/state_fixtures.ex", __DIR__)
-  
+
   import Mock
 
   setup do
-    {:ok, queue_name: "test_queue"} 
+    {:ok, queue_name: "test_queue"}
   end
 
   test "sends message correctly", state do
@@ -14,29 +14,34 @@ defmodule Qsm.SqsManagerTest do
       module_name: Qsm.Fixtures.StateA,
       body: "my_data"
     }
-    expected_ser_message = Poison.encode!(expected_q_msg)
-    with_mock ExAws,
-      [request: fn 
-        %{action: :send_message} -> :ok
-      end] do
-        Qsm.SqsManager.send_message(
-          state[:queue_name], 
-          expected_q_msg.module_name, 
-          expected_q_msg.body)
 
-        assert called ExAws.request(
-          %{action: :send_message,
-            path: "/" <> state[:queue_name],
-            params: %{"MessageBody" => expected_ser_message}})
-      end
+    expected_ser_message = Poison.encode!(expected_q_msg)
+
+    with_mock ExAws, request: fn %{action: :send_message} -> :ok end do
+      Qsm.SqsManager.send_message(
+        state[:queue_name],
+        expected_q_msg.module_name,
+        expected_q_msg.body
+      )
+
+      assert called(
+               ExAws.request(%{
+                 action: :send_message,
+                 path: "/" <> state[:queue_name],
+                 params: %{"MessageBody" => expected_ser_message}
+               })
+             )
+    end
   end
 
-  test "extracts transition" do 
+  test "extracts transition" do
     message = "arbitrary message"
+
     q_msg = %Qsm.QueueMessage{
       module_name: Qsm.Fixtures.StateA,
       body: message
     }
+
     ser_msg = Poison.encode!(q_msg)
     expected_resp = Qsm.Fixtures.StateA.get_next_state(message)
 
@@ -47,28 +52,31 @@ defmodule Qsm.SqsManagerTest do
 
   test "handles message with next state", state do
     message = "arbitary message"
+
     q_msg = %Qsm.QueueMessage{
       module_name: Qsm.Fixtures.StateA,
       body: message
     }
+
     ser_msg = Poison.encode!(q_msg)
 
     expected_q_msg = %Qsm.QueueMessage{
       module_name: Qsm.Fixtures.StateB,
       body: message
     }
+
     expected_ser_message = Poison.encode!(expected_q_msg)
 
-    with_mock ExAws,
-      [request: fn 
-        %{action: :send_message} -> :ok
-      end] do
-        Qsm.SqsManager.message_handler(state[:queue_name], ser_msg)
+    with_mock ExAws, request: fn %{action: :send_message} -> :ok end do
+      Qsm.SqsManager.message_handler(state[:queue_name], ser_msg)
 
-        assert called ExAws.request(
-          %{action: :send_message,
-            path: "/" <> state[:queue_name],
-            params: %{"MessageBody" => expected_ser_message}})
+      assert called(
+               ExAws.request(%{
+                 action: :send_message,
+                 path: "/" <> state[:queue_name],
+                 params: %{"MessageBody" => expected_ser_message}
+               })
+             )
     end
   end
 
@@ -82,14 +90,8 @@ defmodule Qsm.SqsManagerTest do
 
     ser_msg = Poison.encode!(q_msg)
 
-    with_mock ExAws,
-      [request: fn 
-        %{action: :send_message} -> raise "Should not be called"
-      end] do
-        Qsm.SqsManager.message_handler(state[:queue_name], ser_msg)
+    with_mock ExAws, request: fn %{action: :send_message} -> raise "Should not be called" end do
+      Qsm.SqsManager.message_handler(state[:queue_name], ser_msg)
     end
-
-
   end
-
 end
