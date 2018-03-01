@@ -21,7 +21,6 @@ defmodule Qsm.Mixfile do
     [
       {:e_poller, "~> 0.1.1"},
       {:poison, "~> 3.1"},
-      {:mock, "~> 0.3.0", only: :test},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end
