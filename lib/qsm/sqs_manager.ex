@@ -2,13 +2,13 @@ defmodule Qsm.SqsManager do
   @aws Application.get_env(:qsm, :aws)
 
   def message_handler(queue_name, message) do
-    case get_transition(message) do
+    case apply_transition(message) do
       {module_name, body} -> send_message(queue_name, module_name, body)
       _ -> nil
     end
   end
 
-  defp get_transition(message) do
+  defp apply_transition(message) do
     data = Poison.decode!(message, as: %Qsm.QueueMessage{})
 
     data.module_name
