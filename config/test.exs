@@ -1,4 +1,3 @@
 use Mix.Config
 
-config :qsm,
-  aws: Qsm.MockExAws
+config :qsm, aws: Qsm.MockExAws

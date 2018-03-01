@@ -1,7 +1,6 @@
 defmodule Qsm.SqsManagerTest do
   use ExUnit.Case
-  doctest Qsm
-  Code.load_file("../fixtures/state_fixtures.ex", __DIR__)
+  doctest Qsm.SqsManager
 
   setup do
     {:ok, queue_name: "test_queue"}
@@ -21,6 +20,6 @@ defmodule Qsm.SqsManagerTest do
   test "handles message without next state", state do
     message = Poison.encode!(%Qsm.QueueMessage{module_name: Qsm.MockExitState, body: "foo"})
     res = Qsm.SqsManager.message_handler(state[:queue_name], message)
-    assert res == nil
+    assert res == :ok
   end
 end

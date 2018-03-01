@@ -8,7 +8,6 @@ config :ex_aws,
     :instance_role
   ]
 
-config :qsm,
-  aws: ExAws
+config :qsm, aws: ExAws
 
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

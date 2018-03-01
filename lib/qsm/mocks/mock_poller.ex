@@ -1,9 +1,9 @@
 defmodule Qsm.MockPoller do
-  def start_link(queue_name, handler) do
+  def start_link(_queue_name, _handler) do
     nil
   end
 
-  def poll(pid) do 
+  def poll(_pid) do
     nil
   end
 end
