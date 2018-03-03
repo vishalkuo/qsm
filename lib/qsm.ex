@@ -19,7 +19,7 @@ defmodule Qsm do
       iex> Qsm.enqueue_work("my_worker_queue", Qsm.MockEntryState, "test_data")
       :ok
   """
-  @spec enqueue_work(queue_name, Qsm.State, state_data) :: nil
+  @spec enqueue_work(queue_name, Qsm.State, state_data) :: :ok
   def enqueue_work(queue_name, entry_state, entry_data \\ nil) do
     Qsm.SqsManager.send_message(queue_name, entry_state, entry_data)
     :ok
