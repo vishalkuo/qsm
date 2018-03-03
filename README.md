@@ -2,6 +2,8 @@
 
 A state machine built that leverages SQS to act in a distributed manner.
 
+Official documentation can be found [here](https://hexdocs.pm/qsm/0.1.0/api-reference.html).
+
 ### Note About Authentication
 
 If you're planning on using config file authentication, the following needs to be added to your
